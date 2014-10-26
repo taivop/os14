@@ -15,6 +15,11 @@ def addStartTime(p, start_time):
     l.append(start_time)
     return tuple(l)
 
+def decreaseDuration(p, delta):
+    l = list(p)
+    l[2] = l[2] - delta
+    return tuple(l)
+
 def allocate_FCFS(processes):
     allocated = FCFS_recurs(sortProcessesByField(processes[:], "arrive_time"), [], 0)
     return allocated
@@ -45,22 +50,62 @@ def SJF_recurs(processes, allocated, t):
         shortestProcess = processes[0]
         print("shortest process is: " + str(shortestProcess))
         if t < shortestProcess[1]:            # if we are not at the start time of the shortest job yet
-            nearestProcess = sortProcessesByField(processes, "arrive_time")[0]       # get nearest job
-            if nearestProcess[1] <= t:                                              # if we can already do nearest job
-                print("\tdoing nearest job: " + str(nearestProcess))
-                processes.remove(nearestProcess)
-                return SJF_recurs(processes, allocated + [addStartTime(nearestProcess, t)], t + nearestProcess[2])
-            else:
-                return SJF_recurs(processes, allocated, nearestProcess[1])          # advance time to nearest job
+            # find all processes that we could start before the arrival of the shortest process
+            possibleToStart = filterProcessesByField(processes, "arrive_time", lambda x: x < shortestProcess[1])
+
+            if not possibleToStart:
+                # no processes until shortest job -> advance to time of shortest job
+                return SJF_recurs(processes, allocated, shortestProcess[1])
+
+            # get the first one available, if several, get shortest
+            nextProcess = sortProcessesByField(sortProcessesByField(possibleToStart, "duration"), "arrive_time")[0]
+            print("\tdoing shortest job between now and actual shortest: " + str(nextProcess))
+            processes.remove(nextProcess)
+            return SJF_recurs(processes, allocated + [addStartTime(nextProcess, t)], t + nextProcess[2])
         else:                   # we can do the shortest job
             print("\tdoing shortest job: " + str(shortestProcess))
             processes.remove(shortestProcess)
             return SJF_recurs(processes, allocated + [addStartTime(shortestProcess, t)], t + shortestProcess[2])
 
 
+def allocate_RR(processes):
+    return RR(processes)
+
+def RR(processes):
+    quant = 4
+    processor_occupations = [] # list of tuples (id, start, end) to keep track of what process was done; -1 is IDLE
+
+    # for each process, keep track of how much of it we still have to do
+    t = 0
+    while processes:
+        # filter out all processes that are currently available
+        available = filterProcessesByField(processes, "arrive_time", lambda x: x <= t)
+
+        if not available:
+            closest_process_start = sortProcessesByField(processes, "arrive_time")[0][1]
+            processor_occupations.append((-1, t, closest_process_start))
+            t = closest_process_start
+            continue
+
+        # take a random process from there
+        process = available[0]
+        if process[2] <= quant:          # if this process is shorter than quant
+            processes.remove(process)
+            processor_occupations.append((process[0], t, t + process[2]))
+            t += process[2]
+        else:                            # this process is longer than quant
+            processes.remove(process)
+            process_new = decreaseDuration(process, quant)
+            processes.append(process_new)
+            processor_occupations.append((process[0], t, t + quant))
+            t += quant
+
+    return processor_occupations
 
 
 
 processes = testPatternToArrays("0,10;4,5;12,4")
-processes2 = testPatternToArrays("0,10;0,5;22,4")
-print(allocate_SJF(processes2))
+processes2 = testPatternToArrays("0,7;2,4;4,1;5,4")
+processes3 = testPatternToArrays("0,24;0,3;0,3")
+print(processes3)
+print(allocate_RR(processes3))
