@@ -46,6 +46,15 @@ def fieldNameToInt(fieldName):
     else:       # unrecognised field key => throw error
         raise Exception("Unknown field name")
 
+def addStartTime(p, start_time):
+    l = list(p)
+    l.append(start_time)
+    return tuple(l)
+
+def decreaseDuration(p, delta):
+    l = list(p)
+    l[2] = l[2] - delta
+    return tuple(l)
 
 
 def removeById(processes, id):
