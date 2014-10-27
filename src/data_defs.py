@@ -5,7 +5,7 @@ s = "0,10;4,5;12,4"
 # each pair consists of process arrive time and process length
 # OUTPUT
 # list of tuples (id, arrive_time, duration)
-def testPatternToArrays(s):
+def testPatternToArray(s):
     pairs = s.strip().split(";")
 
     processes = []
@@ -56,6 +56,11 @@ def decreaseDuration(p, delta):
     l[2] = l[2] - delta
     return tuple(l)
 
+def increaseOccupationDuration(o, delta):
+    l = list(o)
+    l[2] = l[2] + delta
+    return tuple(l)
+
 
 def removeById(processes, id):
     toRemove = None
@@ -70,5 +75,5 @@ def removeById(processes, id):
 
 
 def preDefPattern(n):
-    a = ["0,10;4,5;12,4","mingiteinePattern", "mingiKolmasPattern"]
+    a = ["0,10;4,5;12,4","0,7;2,4;4,1;5,4", "0,3;0,24;0,3"]
     return a[n]
