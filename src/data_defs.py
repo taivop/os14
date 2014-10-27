@@ -77,3 +77,22 @@ def removeById(processes, id):
 def preDefPattern(n):
     a = ["0,10;4,5;12,4","0,7;2,4;4,1;5,4", "0,3;0,24;0,3"]
     return a[n]
+
+def waitTimes(processes, occupations):
+    waitTime = [0] * len(processes)
+
+    for p in processes:
+        # go from left to right in occupations and find time the process first started
+        for o in occupations:
+            if o[0] == p[0]:
+                waitTime[p[0] - 1] = o[1]
+                break
+
+    for p in processes:
+        waitTime[p[0] - 1] -= p[1]              # subtract the start time from each process
+
+    return waitTime
+
+def avgWaitTime(processes, occupations):
+    waitTimeVals = waitTimes(processes, occupations)
+    return sum(waitTimeVals) / len(waitTimeVals)

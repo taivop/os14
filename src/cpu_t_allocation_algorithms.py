@@ -68,7 +68,7 @@ def SJF_recurs(processes, allocated, t):
 
 
 def allocate_RR(processes):
-    return RR_loop(processes)
+    return RR_loop(processes[:])
 
 def RR_loop(processes):
     quant = 4
@@ -102,7 +102,7 @@ def RR_loop(processes):
     return processor_occupations
 
 def allocate_MLQ(processes):
-    return MLQ_loop(processes)
+    return MLQ_loop(processes[:])
 
 def MLQ_loop(processes):
     processor_occupations = []
