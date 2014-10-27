@@ -47,16 +47,28 @@ def drawProcessorOccupations(occupations, canvas):
     box_left_x = 20
     kaugus = 0
 
+    currentFill = True
+
     for i in range(len(occupations)):
         p_id = occupations[i][0]
         p_start_time = occupations[i][1]
         p_end_time = occupations[i][2]
         p_duration = p_end_time - p_start_time
 
-        rect_duration = canvas.create_rectangle(box_left_x, 60, box_left_x + p_duration * 16,100, fill="green")
+        fill1 = "light cyan"
+        fill2 = "pale turquoise"
+
+        # swap colors for consecutive blocks
+        if currentFill:
+            fillColor = fill1
+        else:
+            fillColor = fill2
+        currentFill = not currentFill
+
+        rect_duration = canvas.create_rectangle(box_left_x, 60, box_left_x + p_duration * 16,100, fill=fillColor)
 
         rect_duration_center = box_left_x + p_duration * 8
-        rect_duration = canvas.create_text(rect_duration_center, 80, text=p_id)
+        text_pid = canvas.create_text(rect_duration_center, 80, text=p_id, font="Arial 13 bold")
 
         m = canvas.create_text(box_left_x, 110, text=str(kaugus))
         kaugus += p_duration
