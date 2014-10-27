@@ -67,3 +67,8 @@ def removeById(processes, id):
         processes.remove(toRemove)
     else:
         raise ValueError("no such ID in list")
+
+
+def preDefPattern(n):
+    a = ["0,10;4,5;12,4","mingiteinePattern", "mingiKolmasPattern"]
+    return a[n]

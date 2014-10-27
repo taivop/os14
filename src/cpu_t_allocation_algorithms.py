@@ -1,4 +1,4 @@
-from parse import *
+from data_defs import *
 
 # Define some lambdas
 mean = lambda a: sum(a) / len(a)
@@ -10,19 +10,18 @@ wait_times = lambda ar, st: [st[i]-ar[i] for i in range(0,len(ar))]
 # started[0] shows at what time the process with ID 0 was started
 # avg_wait_time shows the average wait time of a process
 
-def addStartTime(p, start_time):
-    l = list(p)
-    l.append(start_time)
-    return tuple(l)
+def startTimesToOccupations(processes):
+    occupations = []
+    processes = sortProcessesByField(processes, "start_time")
 
-def decreaseDuration(p, delta):
-    l = list(p)
-    l[2] = l[2] - delta
-    return tuple(l)
+    for p in processes:
+        occupations.append((p[0], p[3], p[3] + p[2]))
+
+    return occupations
 
 def allocate_FCFS(processes):
     allocated = FCFS_recurs(sortProcessesByField(processes[:], "arrive_time"), [], 0)
-    return allocated
+    return startTimesToOccupations(allocated)
 
 def FCFS_recurs(processes, allocated, t):
     if len(processes) == 1:     # recursion base
@@ -37,7 +36,7 @@ def FCFS_recurs(processes, allocated, t):
 
 def allocate_SJF(processes):
     allocated = SJF_recurs(processes[:], [], 0)
-    return allocated
+    return startTimesToOccupations(allocated)
 
 def SJF_recurs(processes, allocated, t):
     # mitteväljatõrjuv variant
@@ -69,9 +68,9 @@ def SJF_recurs(processes, allocated, t):
 
 
 def allocate_RR(processes):
-    return RR(processes)
+    return RR_loop(processes)
 
-def RR(processes):
+def RR_loop(processes):
     quant = 4
     processor_occupations = [] # list of tuples (id, start, end) to keep track of what process was done; -1 is IDLE
 
@@ -102,10 +101,13 @@ def RR(processes):
 
     return processor_occupations
 
+def allocate_MLQ(processes):
+    return None
 
 
 processes = testPatternToArrays("0,10;4,5;12,4")
 processes2 = testPatternToArrays("0,7;2,4;4,1;5,4")
-processes3 = testPatternToArrays("0,24;0,3;0,3")
-print(processes3)
+processes3 = testPatternToArrays("0,24;0,3;22,3")
+#print(processes3)
 print(allocate_RR(processes3))
+#print(startTimesToOccupations(allocate_FCFS(processes)))
