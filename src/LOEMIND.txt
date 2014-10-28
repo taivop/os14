@@ -1,0 +1,7 @@
+Programmi käivitamine: kaustas 'src' jooksutada käsku 'python gui.py'.
+
+Kasutatud ja testitud keel: Python 3.1.4
+Kasutatud teegid: ainult süsteemsed.
+Kasutatud operatsioonisüsteem: Windows 7 32-bit.
+
+Muud nõuded süsteemile: parima tulemuse nägemiseks installida arvutisse font 'Courier'.
