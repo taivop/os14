@@ -6,7 +6,10 @@ from cpu_t_allocation_algorithms import *
 
 
 def runAlgorithm(algorithm, canvas, patternString):
-    processes = testPatternToArray(patternString)
+    try:
+        processes = testPatternToArray(patternString)
+    except:
+        messagebox.showerror(title="Viga sisendis", message="Vigane kasutaja sisestatud muster!")
 
     occupations = None
     if algorithm == "FCFS":
@@ -21,7 +24,7 @@ def runAlgorithm(algorithm, canvas, patternString):
         raise Exception("Trying to run an algorithm that doesn't exist: " + str(algorithm))
 
     waitTime = avgWaitTime(processes, occupations)
-    print("average wait time: {:2f}".format(waitTime))
+    #print("average wait time: {:2f}".format(waitTime))
     showProcessesAndAvgWaitTime(processes, waitTime)
     drawProcessorOccupations(occupations, canvas)
 
@@ -38,7 +41,7 @@ def showProcessesAndAvgWaitTime(processes, waitTime):
     for p in processes:
         s = "id {:2}, saabub t={:2}, kestus {:2}".format(p[0], p[1], p[2])
         processesText.insert(INSERT, s + "\n")
-    processesText.insert(INSERT, "\n" + "Keskmine ooteaeg: {:.2f}".format(waitTime) + "\n")
+    processesText.insert(INSERT, "Keskmine ooteaeg: {:.2f}".format(waitTime) + "\n")
 
 # joonistab tahvlile protsesse kujutavad ristkülikud numbrite ja protsesside nimedega
 def drawProcessorOccupations(occupations, canvas):
@@ -130,7 +133,10 @@ def testingGui():
     button_clear.place(x=500, y=190,height=25, width=130)
 
     global processesText
-    processesText = Text(window, width=40, height=9)
+    try:
+        processesText = Text(window, width=35, height=9, font="Courier 11")   # if possible, use Courier font
+    except:
+        processesText = Text(window, width=35, height=9)                      # if not, use default font
     processesText.place(x=450, y=30)
 
     window.mainloop()
