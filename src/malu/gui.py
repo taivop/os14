@@ -47,7 +47,7 @@ def showProcessesAndAvgWaitTime(processes, waitTime):
 def drawMemoryStates(states, canvas):
     clearCanvas(canvas)
 
-    kaugus = 0
+    lineHeight = 20
 
     fill1 = "orange red"
     fill2 = "orange"
@@ -59,11 +59,10 @@ def drawMemoryStates(states, canvas):
         currentFill = True
 
         state = states[s]
-        print(state)
 
-        rect_allmemory = canvas.create_rectangle(20, 60 + y_offset, 20 + MEMORY_SIZE * 16,100 + y_offset, fill=fillEmpty, outline=fillEmpty)
-        m = canvas.create_text(20, 110 + y_offset, text=str(0))
-        m = canvas.create_text(20 + MEMORY_SIZE * 16, 110 + y_offset, text=str(50))
+        rect_allmemory = canvas.create_rectangle(20, 60 + y_offset, 20 + MEMORY_SIZE * 16,60 + lineHeight + y_offset, fill=fillEmpty, outline=fillEmpty)
+        m = canvas.create_text(20, 60 + lineHeight * 1.30 + y_offset, text=str(0))
+        m = canvas.create_text(20 + MEMORY_SIZE * 16, 60 + lineHeight * 1.30 + y_offset, text=str(50))
 
         for i in range(len(state)):
             b_id = state[i][0]
@@ -81,19 +80,19 @@ def drawMemoryStates(states, canvas):
                 fillColor = fill2
             currentFill = not currentFill
 
-            rect_duration = canvas.create_rectangle(box_left_x, 60 + y_offset, box_right_x, 100 + y_offset, fill=fillColor)
+            rect_duration = canvas.create_rectangle(box_left_x, 60 + y_offset, box_right_x, 60 + lineHeight + y_offset, fill=fillColor)
 
             # box label
             rect_duration_center = (box_left_x + box_right_x) / 2
-            text_bid = canvas.create_text(rect_duration_center, 80 + y_offset, text=b_id, font="Arial 13 bold")
+            text_bid = canvas.create_text(rect_duration_center, 60 + lineHeight / 2 + y_offset, text=b_id, font="Arial 13 bold")
 
             # index labels
             if b_start_index != 0:
-                m = canvas.create_text(box_left_x, 110 + y_offset, text=str(b_start_index))
-            m = canvas.create_text(box_right_x, 110 + y_offset, text=str(b_end_index))
+                m = canvas.create_text(box_left_x, 60 + lineHeight * 1.30 + y_offset, text=str(b_start_index))
+            m = canvas.create_text(box_right_x, 60 + lineHeight * 1.30 + y_offset, text=str(b_end_index))
 
 
-        y_offset += 100
+        y_offset += lineHeight * 1.8
 
 def testingGui():
     window = Tk()

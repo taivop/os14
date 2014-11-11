@@ -119,7 +119,13 @@ def getFreeBlocks(memory_state, MEMORY_SIZE):
 
 
 
-
+def removeDuplicateStates(states):              # assuming that state changed iff num of memory blocks in it changed
+    withoutDuplicates = states[:]
+    for i in range(0, len(states)):
+        if (i != len(states) - 1):
+            if len(states[i]) == len(states[i+1]):
+                withoutDuplicates.remove(states[i])
+    return withoutDuplicates
 
 
 

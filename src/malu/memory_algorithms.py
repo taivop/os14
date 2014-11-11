@@ -20,27 +20,30 @@ def allocate_FF(requests):       # first-fit
 
             freeBlocks = getFreeBlocks(current_state, MEMORY_SIZE)  # get free blocks
 
-            #print("free blocks: ", end="")
-            #print(freeBlocks)
+            print("free blocks: ", end="")
+            print(freeBlocks)
 
             # check if any block would fit at all
-            freeBlocksSorted = sortBlocksByField(freeBlocks, "size")
+            freeBlocksSorted = list(reversed(sortBlocksByField(freeBlocks, "size")))          # reverse because otherwise we sort smaller -> larger, but we want vice versa
+            print("sorted:      ", end="")
+            print(freeBlocksSorted)
 
             if not freeBlocks or freeBlocksSorted[0][3] < r[1]:
                 # if did not fit in any block, then move one timestep forward
                 t += 1
                 current_state = oneTimeStepForward(current_state)
+                states.append(current_state[:])
             else:
                 #print(list(sortBlocksByField(freeBlocks, "start index")))
                 chosenFreeBlock = filterBlocksByField(sortBlocksByField(freeBlocks, "start index"), "size", lambda a: a >= r[1])[0]
                 newMemoryBlock = (r[0], r[2], chosenFreeBlock[2], r[1])
                 current_state.append(newMemoryBlock)
                 states.append(current_state[:])                # remember that we updated the state
-                print("current state: ", end="")
-                print(current_state)
+                #print("current state: ", end="")
+                #print(current_state)
                 break
 
-    return states
+    return removeDuplicateStates(states)
 
 
 def allocate_BF(requests):       # best-fit
