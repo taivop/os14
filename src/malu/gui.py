@@ -11,24 +11,24 @@ def runAlgorithm(algorithm, canvas, patternString):
     except:
         messagebox.showerror(title="Viga sisendis", message="Vigane kasutaja sisestatud muster!")
 
-    occupations = None
+    states = None
     if algorithm == "FF":
-        occupations = allocate_FF(requests)
+        states = allocate_FF(requests)
     elif algorithm == "BF":
-        occupations = allocate_BF(requests)
+        states = allocate_BF(requests)
     elif algorithm == "WF":
-        occupations = allocate_WF(requests)
+        states = allocate_WF(requests)
     elif algorithm == "RF":
-        occupations = allocate_RF(requests)
+        states = allocate_RF(requests)
     else:
         raise Exception("Trying to run an algorithm that doesn't exist: " + str(algorithm))
 
     #waitTime = avgWaitTime(requests, occupations)
     #print("average wait time: {:2f}".format(waitTime))
     #showProcessesAndAvgWaitTime(requests, waitTime)
-    #drawProcessorOccupations(occupations, canvas)
+    drawMemoryStates(states, canvas)
 
-def runCpuTimeAllocationApp():
+def runMemoryAllocationApp():
     testingGui()
 
 def clearCanvas(canvas):
@@ -44,45 +44,63 @@ def showProcessesAndAvgWaitTime(processes, waitTime):
     processesText.insert(INSERT, "Keskmine ooteaeg: {:.2f}".format(waitTime) + "\n")
 
 # joonistab tahvlile protsesse kujutavad ristkülikud numbrite ja protsesside nimedega
-def drawProcessorOccupations(occupations, canvas):
+def drawMemoryStates(states, canvas):
     clearCanvas(canvas)
 
-    box_left_x = 20
     kaugus = 0
+
+    fill1 = "orange red"
+    fill2 = "orange"
+    fillEmpty = "snow3"
 
     currentFill = True
 
-    for i in range(len(occupations)):
-        p_id = occupations[i][0]
-        p_start_time = occupations[i][1]
-        p_end_time = occupations[i][2]
-        p_duration = p_end_time - p_start_time
+    y_offset = -30
 
-        fill1 = "light cyan"
-        fill2 = "pale turquoise"
+    for s in range(0,len(states)):
 
-        # swap colors for consecutive blocks
-        if currentFill:
-            fillColor = fill1
-        else:
-            fillColor = fill2
-        currentFill = not currentFill
+        state = states[s]
+        print(state)
 
-        rect_duration = canvas.create_rectangle(box_left_x, 60, box_left_x + p_duration * 16,100, fill=fillColor)
+        rect_allmemory = canvas.create_rectangle(20, 60 + y_offset, 20 + MEMORY_SIZE * 16,100 + y_offset, fill=fillEmpty, outline=fillEmpty)
+        m = canvas.create_text(20, 110 + y_offset, text=str(0))
+        m = canvas.create_text(20 + MEMORY_SIZE * 16, 110 + y_offset, text=str(50))
 
-        rect_duration_center = box_left_x + p_duration * 8
-        text_pid = canvas.create_text(rect_duration_center, 80, text=p_id, font="Arial 13 bold")
+        for i in range(len(state)):
+            b_id = state[i][0]
+            b_start_index = state[i][2]
+            b_end_index = b_start_index + state[i][3]
+            b_size = state[i][3]
 
-        m = canvas.create_text(box_left_x, 110, text=str(kaugus))
-        kaugus += p_duration
-        box_left_x += p_duration*16
-    m = canvas.create_text(box_left_x, 110, text=str(kaugus))
+            box_left_x = 20 + b_start_index * 16
+            box_right_x = box_left_x + b_size * 16
+
+            # swap colors for consecutive blocks
+            if currentFill:
+                fillColor = fill1
+            else:
+                fillColor = fill2
+            currentFill = not currentFill
+
+            rect_duration = canvas.create_rectangle(box_left_x, 60 + y_offset, box_right_x, 100 + y_offset, fill=fillColor)
+
+            # box label
+            rect_duration_center = (box_left_x + box_right_x) / 2
+            text_bid = canvas.create_text(rect_duration_center, 80 + y_offset, text=b_id, font="Arial 13 bold")
+
+            # index labels
+            if b_start_index != 0:
+                m = canvas.create_text(box_left_x, 110 + y_offset, text=str(b_start_index))
+            m = canvas.create_text(box_right_x, 110 + y_offset, text=str(b_end_index))
+
+
+        y_offset += 100
 
 def testingGui():
     window = Tk()
     window.title("Mäluhalduse planeerimise algoritmid")
     window.resizable(False, False)
-    window.geometry("800x400")
+    window.geometry("1000x750")
 
     chosenPattern = IntVar()
     chosenPattern.set(0)
@@ -112,7 +130,7 @@ def testingGui():
     patternFromUserEntry = ttk.Entry(window)
     patternFromUserEntry.place(x=120, y=130, height=25, width=240)
 
-    tahvel = Canvas(window, width=800, height=180, background="white")
+    tahvel = Canvas(window, width=1000, height=180+350, background="white")
     tahvel.place(x=0, y=220)
 
     getPattern = lambda n: preDefPattern(n) if n in [0,1,2] else patternFromUserEntry.get()
@@ -144,4 +162,4 @@ def testingGui():
 
 
 
-runCpuTimeAllocationApp()
+runMemoryAllocationApp()
