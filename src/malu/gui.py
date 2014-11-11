@@ -22,14 +22,16 @@ def runAlgorithm(algorithm, canvas, patternString):
             states = allocate_WF(requests)
         elif algorithm == "RF":
             states = allocate_RF(requests)
-    except Exception:
-        messagebox.showerror(title="Viga sisendis", message="Leidub protsess, mille nõutav mälu ületab mälu kogusuuruse ({0} ühikut)!".format(MEMORY_SIZE))
 
+        drawMemoryStates(states, canvas)
+
+    except MemoryRequestTooLargeError as err:
+        drawMemoryStates(err.args[1], canvas)
+        messagebox.showerror(title="Viga sisendis", message="Leidub protsess, mille nõutav mälu ületab mälu kogusuuruse ({0} ühikut)!".format(MEMORY_SIZE))
 
     #waitTime = avgWaitTime(requests, occupations)
     #print("average wait time: {:2f}".format(waitTime))
     #showProcessesAndAvgWaitTime(requests, waitTime)
-    drawMemoryStates(states, canvas)
 
 def runMemoryAllocationApp():
     testingGui()
