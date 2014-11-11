@@ -10,18 +10,21 @@ def runAlgorithm(algorithm, canvas, patternString):
         requests = testPatternToArray(patternString)
     except:
         messagebox.showerror(title="Viga sisendis", message="Vigane kasutaja sisestatud muster!")
+        return
 
     states = None
-    if algorithm == "FF":
-        states = allocate_FF(requests)
-    elif algorithm == "BF":
-        states = allocate_BF(requests)
-    elif algorithm == "WF":
-        states = allocate_WF(requests)
-    elif algorithm == "RF":
-        states = allocate_RF(requests)
-    else:
-        raise Exception("Trying to run an algorithm that doesn't exist: " + str(algorithm))
+    try:
+        if algorithm == "FF":
+            states = allocate_FF(requests)
+        elif algorithm == "BF":
+            states = allocate_BF(requests)
+        elif algorithm == "WF":
+            states = allocate_WF(requests)
+        elif algorithm == "RF":
+            states = allocate_RF(requests)
+    except Exception:
+        messagebox.showerror(title="Viga sisendis", message="Leidub protsess, mille nõutav mälu ületab mälu kogusuuruse ({0} ühikut)!".format(MEMORY_SIZE))
+
 
     #waitTime = avgWaitTime(requests, occupations)
     #print("average wait time: {:2f}".format(waitTime))

@@ -14,7 +14,7 @@ def allocate_FF(requests):       # first-fit
     for r in requests:
         #print(r)
         if r[1] > MEMORY_SIZE:
-            raise Exception("memory request larger than whole memory size")
+            raise Exception("memory request {0} is larger than whole memory size".format(r[0]))
             # or instead return some special value, e.g. None?
         while True:
 
