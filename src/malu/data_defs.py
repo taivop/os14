@@ -89,19 +89,28 @@ def getFreeBlocks(memory_state, MEMORY_SIZE):
 
     freeBlocks = []
 
-    endOfOccupiedArea = 0
     freeBlockStartIndex = 0
-    for block in sorted_blocks:
-        if block[2] > freeBlockStartIndex:
-            # add free block to list
-            freeBlock = (None, None, freeBlockStartIndex, block[2] - freeBlockStartIndex)
+
+    if not sorted_blocks:
+        return [(None, None, 0, MEMORY_SIZE)]
+    else:
+        firstOccupied = sorted_blocks[0]
+        if firstOccupied[2] != 0:
+            freeBlock = (None, None, 0, firstOccupied[2])
             freeBlocks.append(freeBlock)
+        freeBlockStartIndex = firstOccupied[2] + firstOccupied[3]
 
-        endOfOccupiedArea = block[2] + block[3]     # remember end index of last block
+        for block in sorted_blocks[1:]:
+            if block[2] > freeBlockStartIndex:
+                # add free block to list
+                freeBlock = (None, None, freeBlockStartIndex, block[2] - freeBlockStartIndex)
+                freeBlocks.append(freeBlock)
 
-    # now check if the end of last block was at MEMORY_SIZE, if not then add another free block
-    if endOfOccupiedArea < MEMORY_SIZE:
-        freeBlocks.append((None, None, endOfOccupiedArea, MEMORY_SIZE - endOfOccupiedArea))
+            freeBlockStartIndex = block[2] + block[3]     # remember end index of last block
+
+        # now check if the end of last block was at MEMORY_SIZE, if not then add another free block
+        if freeBlockStartIndex < MEMORY_SIZE:
+            freeBlocks.append((None, None, freeBlockStartIndex, MEMORY_SIZE - freeBlockStartIndex))
 
     #raise Exception("getFreeBlocks: not implemented")
     #for block in memory_state:

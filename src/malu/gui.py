@@ -53,11 +53,10 @@ def drawMemoryStates(states, canvas):
     fill2 = "orange"
     fillEmpty = "snow3"
 
-    currentFill = True
-
     y_offset = -30
-
     for s in range(0,len(states)):
+
+        currentFill = True
 
         state = states[s]
         print(state)
