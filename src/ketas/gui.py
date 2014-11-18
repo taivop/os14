@@ -9,25 +9,28 @@ from ketas.disk_algorithms import *
 def runAlgorithm(algorithm, canvas, patternString):
     try:
         requests = testPatternToArray(patternString)
+        requests_copy = requests[:]
     except:
-        messagebox.showerror(title="Viga sisendis", message="Vigane kasutaja sisestatud muster! Kontrolli, et mustris pole ükski indeks suurem kui {0}.".format(MAX_INDEX))
+        messagebox.showerror(title="Viga sisendis", message="Vigane kasutaja sisestatud muster! Kontrolli, et mustris pole ükski indeks suurem kui {0}.".format(MAX_INDEX-1))
         return
     states = None
 
-    if algorithm == "FCFS":
-        states = run_FCFS(requests)
-    elif algorithm == "SSTF":
-        states = run_SSTF(requests)
-    elif algorithm == "SCAN":
-        states = run_SCAN(requests)
-    elif algorithm == "LOOK":
-        states = run_LOOK(requests)
-    elif algorithm == "CSCAN":
-        states = run_CSCAN(requests)
-    elif algorithm == "CLOOK":
-        states = run_CLOOK(requests)
+    startIndex = 10
 
-    drawDiskStates(requests, states, canvas)
+    if algorithm == "FCFS":
+        states = run_FCFS(requests_copy, startIndex)
+    elif algorithm == "SSTF":
+        states = run_SSTF(requests_copy, startIndex)
+    elif algorithm == "SCAN":
+        states = run_SCAN(requests_copy, startIndex)
+    elif algorithm == "LOOK":
+        states = run_LOOK(requests_copy, startIndex)
+    elif algorithm == "CSCAN":
+        states = run_CSCAN(requests_copy, startIndex)
+    elif algorithm == "CLOOK":
+        states = run_CLOOK(requests_copy, startIndex)
+
+    drawDiskStates(requests, states, startIndex, canvas)
 
 def runMemoryAllocationApp():
     testingGui()
@@ -35,7 +38,7 @@ def runMemoryAllocationApp():
 def clearCanvas(canvas):
     canvas.delete('all')
 
-def drawDiskStates(requests, states, canvas):
+def drawDiskStates(requests, states, startIndex, canvas):
 
     clearCanvas(canvas)
 
@@ -71,13 +74,12 @@ def drawDiskStates(requests, states, canvas):
     # Disk boxes drawn
 
     # Add starting index and draw its triangle
-    startIndex = 10
-    requests.insert(0, startIndex)
+    states.insert(0, startIndex)
+    #print(requests)
     triangle_center = centerOfBox(startIndex)
     points = [triangle_center, Y_OFFSET]
     points.extend([triangle_center - box_size * 0.5, Y_OFFSET - box_size])
     points.extend([triangle_center + box_size * 0.5, Y_OFFSET - box_size])
-    print(points)
     canvas.create_polygon(points, fill="green")
     canvas.create_text(triangle_center, Y_OFFSET - 1.5 * box_size, text="START")
 
