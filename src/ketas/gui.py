@@ -16,6 +16,17 @@ def runAlgorithm(algorithm, canvas, patternString):
 
     if algorithm == "FCFS":
         states = run_FCFS(requests)
+    elif algorithm == "SSTF":
+        states = run_SSTF(requests)
+    elif algorithm == "SCAN":
+        states = run_SCAN(requests)
+    elif algorithm == "LOOK":
+        states = run_LOOK(requests)
+    elif algorithm == "CSCAN":
+        states = run_CSCAN(requests)
+    elif algorithm == "CLOOK":
+        states = run_CLOOK(requests)
+
     drawDiskStates(requests, states, canvas)
 
 def runMemoryAllocationApp():
@@ -202,16 +213,22 @@ def testingGui():
     getPattern = lambda n: preDefPattern(n) if n in [0,1,2] else patternFromUserEntry.get()
 
     button_FCFS = ttk.Button(window, text="FCFS", command = lambda: runAlgorithm("FCFS", tahvel, getPattern(chosenPattern.get())))
-    button_FCFS.place(x=10, y=190,height=25, width=80)
+    button_FCFS.place(x=10, y=190,height=25, width=60)
 
-    button_SJF = ttk.Button(window, text="BF", command = lambda: runAlgorithm("BF", tahvel, getPattern(chosenPattern.get())))
-    button_SJF.place(x=100, y=190,height=25, width=80)
+    button_SJF = ttk.Button(window, text="SSTF", command = lambda: runAlgorithm("SSTF", tahvel, getPattern(chosenPattern.get())))
+    button_SJF.place(x=80, y=190,height=25, width=60)
 
-    button_SRTF = ttk.Button(window, text="WF", command = lambda: runAlgorithm("WF", tahvel, getPattern(chosenPattern.get())))
-    button_SRTF.place(x=190, y=190,height=25, width=80)
+    button_SRTF = ttk.Button(window, text="SCAN", command = lambda: runAlgorithm("SCAN", tahvel, getPattern(chosenPattern.get())))
+    button_SRTF.place(x=150, y=190,height=25, width=60)
 
-    button_RR = ttk.Button(window, text="RF", command = lambda: runAlgorithm("RF", tahvel, getPattern(chosenPattern.get())))
-    button_RR.place(x=280, y=190,height=25, width=80)
+    button_RR = ttk.Button(window, text="LOOK", command = lambda: runAlgorithm("LOOK", tahvel, getPattern(chosenPattern.get())))
+    button_RR.place(x=220, y=190,height=25, width=60)
+
+    button_RR = ttk.Button(window, text="C-SCAN", command = lambda: runAlgorithm("CSCAN", tahvel, getPattern(chosenPattern.get())))
+    button_RR.place(x=290, y=190,height=25, width=60)
+
+    button_RR = ttk.Button(window, text="C-LOOK", command = lambda: runAlgorithm("CLOOK", tahvel, getPattern(chosenPattern.get())))
+    button_RR.place(x=360, y=190,height=25, width=60)
 
     button_clear = ttk.Button(window, text="Puhasta väljund", command = lambda: clearCanvas(tahvel))
     button_clear.place(x=500, y=190,height=25, width=130)
