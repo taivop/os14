@@ -25,16 +25,20 @@ def clearCanvas(canvas):
     canvas.delete('all')
 
 def drawDiskStates(requests, states, canvas):
+
     clearCanvas(canvas)
 
-    diskBoxLabels = [0, 1, 10, 20, 30, 40]
+    diskBoxLabels = [0, 10, 20, 30, 40]
 
-    # Draw disk boxes
-    x_offset = 20
-    y_offset = 20
+    # --- Draw disk boxes
+    X_OFFSET = 20
+    Y_OFFSET = 40
 
     disk_width = 800
     box_size = disk_width / MAX_INDEX
+
+    def centerOfBox(i):
+        return X_OFFSET + (i + 0.5) * box_size
 
     for i in range(0, MAX_INDEX):
         boxFill = "white"
@@ -42,17 +46,66 @@ def drawDiskStates(requests, states, canvas):
             boxFill = "red"
 
         # draw box
-        x_left = x_offset + i * box_size
-        x_right = x_offset + (i+1) * box_size
-        canvas.create_rectangle(x_left, y_offset, x_right, y_offset + box_size, fill=boxFill, outline="black")
+        x_left = X_OFFSET + i * box_size
+        x_right = X_OFFSET + (i+1) * box_size
+        canvas.create_rectangle(x_left, Y_OFFSET, x_right, Y_OFFSET + box_size, fill=boxFill, outline="black")
 
         if i in diskBoxLabels:
             # draw label
-            canvas.create_text(x_left, y_offset + box_size * 1.5, text=str(i))
+            canvas.create_text(x_left, Y_OFFSET + box_size * 1.5, text=str(i))
 
     #draw max label
-    canvas.create_text(x_offset + MAX_INDEX * box_size, y_offset + box_size * 1.5, text=str(MAX_INDEX))
+    canvas.create_text(X_OFFSET + MAX_INDEX * box_size, Y_OFFSET + box_size * 1.5, text=str(MAX_INDEX))
 
+    # Disk boxes drawn
+
+    # Add starting index and draw its triangle
+    startIndex = 10
+    requests.insert(0, startIndex)
+    triangle_center = centerOfBox(startIndex)
+    points = [triangle_center, Y_OFFSET]
+    points.extend([triangle_center - box_size * 0.5, Y_OFFSET - box_size])
+    points.extend([triangle_center + box_size * 0.5, Y_OFFSET - box_size])
+    print(points)
+    canvas.create_polygon(points, fill="green")
+    canvas.create_text(triangle_center, Y_OFFSET - 1.5 * box_size, text="START")
+
+    # --- Draw disk head movement
+    y_pos = Y_OFFSET + box_size * 3
+    y_delta = box_size * 1.5
+
+    lastX = None
+    lastY = None
+
+    circles = []
+    lines = []
+
+    for i in range(0, len(states)):
+        state = states[i]
+        center = centerOfBox(state)
+        radius = 5
+
+        # connecting line
+        if i > 0:
+            lines.append((lastX, lastY, center, y_pos))
+
+        # circle
+        circles.append((center - radius, y_pos - radius, center + radius, y_pos + radius))
+
+        lastX = center
+        lastY = y_pos
+
+        y_pos += y_delta
+
+    # draw all lines
+    for l in lines:
+        (x1, y1, x2, y2) = l
+        canvas.create_line(x1, y1, x2, y2, fill="black")
+
+    # draw all circles
+    for c in circles:
+        (x1, y1, x2, y2) = c
+        canvas.create_oval(x1, y1, x2, y2, outline="black", fill="green", width=2)
 
 
 

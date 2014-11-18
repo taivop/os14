@@ -21,4 +21,4 @@ def preDefPattern(n):
 def idToLetter(id):     # 1 -> A, 2 -> B, ...
     return chr(64+id)
 
-print(testPatternToArray(preDefPattern(0)))
+#print(testPatternToArray(preDefPattern(0)))
